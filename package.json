@@ -1,0 +1,26 @@
+{
+  "name": "ideaforge",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun --hot src/server/index.ts",
+    "start": "bun src/server/index.ts",
+    "build": "$HOME/.bun/bin/bun build src/client/app.tsx --outdir src/client --target=browser",
+    "build:prod": "$HOME/.bun/bin/bun build src/client/app.tsx --outdir src/client --minify --target=browser",
+    "check": "tsc --noEmit",
+    "icons": "bun scripts/generate-icons.ts"
+  },
+  "dependencies": {
+    "hono": "^4.7.0",
+    "gray-matter": "^4.0.3",
+    "ulidx": "^2.4.1",
+    "preact": "^10.25.0",
+    "preact-render-to-string": "^6.5.0",
+    "yaml": "^2.7.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.7.0"
+  }
+}
