@@ -4,8 +4,8 @@
   "description": "Capture and evolve your ideas",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0c0e14",
-  "theme_color": "#141722",
+  "background_color": "#13161f",
+  "theme_color": "#1b1f2c",
   "icons": [
     {
       "src": "/icon-192.png",
