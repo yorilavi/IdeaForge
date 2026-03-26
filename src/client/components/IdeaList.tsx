@@ -71,7 +71,8 @@ export function IdeaList({ ideas, categories, onSelect, onFilterChange }: Props)
         <input
           class="filter-search"
           type="text"
-          placeholder="Search ideas..."
+          placeholder="Search ideas\u2026"
+          aria-label="Search ideas"
           value={search}
           onInput={(e) => handleSearch((e.target as HTMLInputElement).value)}
         />
@@ -79,6 +80,7 @@ export function IdeaList({ ideas, categories, onSelect, onFilterChange }: Props)
           <select
             class="filter-select"
             value={stage}
+            aria-label="Filter by stage"
             onChange={(e) => handleStage((e.target as HTMLSelectElement).value)}
           >
             <option value="">All stages</option>
@@ -89,6 +91,7 @@ export function IdeaList({ ideas, categories, onSelect, onFilterChange }: Props)
           <select
             class="filter-select"
             value={category}
+            aria-label="Filter by category"
             onChange={(e) => handleCategory((e.target as HTMLSelectElement).value)}
           >
             <option value="">All categories</option>

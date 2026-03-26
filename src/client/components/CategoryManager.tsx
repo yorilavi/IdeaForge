@@ -113,7 +113,8 @@ export function CategoryManager({ categories, onBack, onChanged }: Props) {
           <input
             type="text"
             class="capture-title"
-            placeholder="Category name"
+            placeholder="Category name\u2026"
+            aria-label="Category name"
             value={name}
             onInput={(e) => setName((e.target as HTMLInputElement).value)}
             disabled={saving}
@@ -121,7 +122,8 @@ export function CategoryManager({ categories, onBack, onChanged }: Props) {
           <input
             type="text"
             class="capture-title"
-            placeholder="Description (optional)"
+            placeholder="Description (optional)\u2026"
+            aria-label="Category description"
             value={description}
             onInput={(e) => setDescription((e.target as HTMLInputElement).value)}
             disabled={saving}
@@ -138,7 +140,7 @@ export function CategoryManager({ categories, onBack, onChanged }: Props) {
           </div>
           <div class="category-form-actions">
             <button class="btn-primary" onClick={handleSave} disabled={saving}>
-              {saving ? "Saving..." : adding ? "Add" : "Save"}
+              {saving ? "Saving\u2026" : adding ? "Add" : "Save"}
             </button>
             <button class="btn-secondary" onClick={cancel} disabled={saving}>Cancel</button>
           </div>

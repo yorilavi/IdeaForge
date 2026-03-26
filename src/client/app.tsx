@@ -118,7 +118,7 @@ function App() {
             queueSize={offlineQueue.queueSize}
           />
         {loading ? (
-          <p class="loading">Loading ideas...</p>
+          <p class="loading">Loading ideas\u2026</p>
         ) : (
           <IdeaList
             ideas={ideas}

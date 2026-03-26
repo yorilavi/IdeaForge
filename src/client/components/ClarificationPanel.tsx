@@ -147,8 +147,10 @@ export function ClarificationPanel({ ideaId, clarification, onUpdate }: Props) {
 
   return (
     <div class="clarification-panel">
-      <div class="panel-header" onClick={() => setCollapsed(!collapsed)}>
-        <span class="panel-toggle">{collapsed ? "▶" : "▼"}</span>
+      <div class="panel-header" role="button" tabIndex={0} aria-expanded={!collapsed}
+        onClick={() => setCollapsed(!collapsed)}
+        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setCollapsed(!collapsed); } }}>
+        <span class="panel-toggle" aria-hidden="true">{collapsed ? "▶" : "▼"}</span>
         <h3>Clarification</h3>
         <span class="panel-badge">{filledCount}/{FIELDS.length}</span>
         {!collapsed && (
@@ -157,7 +159,7 @@ export function ClarificationPanel({ ideaId, clarification, onUpdate }: Props) {
             onClick={(e) => { e.stopPropagation(); handleAiAssist(); }}
             disabled={generating}
           >
-            {generating ? "Generating..." : "AI Assist"}
+            {generating ? "Generating\u2026" : "AI Assist"}
           </button>
         )}
       </div>
@@ -174,6 +176,7 @@ export function ClarificationPanel({ ideaId, clarification, onUpdate }: Props) {
                   <button
                     class={`field-mic ${dictatingField === f.key ? "recording" : ""}`}
                     onClick={() => toggleDictation(f.key)}
+                    aria-label={dictatingField === f.key ? "Stop dictation" : `Dictate ${f.label.toLowerCase()}`}
                     title={dictatingField === f.key ? "Stop dictation" : "Dictate"}
                   >
                     {dictatingField === f.key ? "⏹" : "🎤"}
