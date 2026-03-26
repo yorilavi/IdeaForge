@@ -132,7 +132,8 @@ export function CaptureInput({ onCaptured, onOfflineQueue, queueSize }: Props) {
           ref={titleRef}
           type="text"
           class="capture-title"
-          placeholder={summarizing ? "Summarizing..." : voice.state === "listening" ? "Listening..." : "Capture an idea..."}
+          placeholder={summarizing ? "Summarizing\u2026" : voice.state === "listening" ? "Listening\u2026" : "Capture an idea\u2026"}
+          aria-label="Idea title"
           value={title}
           onInput={(e) => { setTitle((e.target as HTMLInputElement).value); setVoiceSource(false); }}
           onFocus={() => setExpanded(true)}
@@ -145,19 +146,21 @@ export function CaptureInput({ onCaptured, onOfflineQueue, queueSize }: Props) {
             class={`capture-mic ${voice.state === "listening" ? "recording" : ""}`}
             onClick={toggleVoice}
             disabled={saving}
+            aria-label={voice.state === "listening" ? "Stop recording" : "Voice capture"}
             title={voice.state === "listening" ? "Stop recording" : "Voice capture"}
           >
             {voice.state === "listening" ? "⏹" : "🎙"}
           </button>
         )}
-        <button type="submit" class="capture-btn" disabled={saving || !title.trim()}>
-          {saving ? "..." : "+"}
+        <button type="submit" class="capture-btn" disabled={saving || !title.trim()} aria-label="Save idea">
+          {saving ? "\u2026" : "+"}
         </button>
       </div>
       {expanded && (
         <textarea
           class="capture-body"
-          placeholder="Add details (optional)..."
+          placeholder="Add details (optional)\u2026"
+          aria-label="Idea details"
           value={body}
           onInput={(e) => setBody((e.target as HTMLTextAreaElement).value)}
           rows={3}
@@ -165,10 +168,10 @@ export function CaptureInput({ onCaptured, onOfflineQueue, queueSize }: Props) {
         />
       )}
       {voice.state === "listening" && (
-        <div class="voice-indicator">Recording — speak your idea</div>
+        <div class="voice-indicator" aria-live="polite">Recording — speak your idea</div>
       )}
       {voice.error && (
-        <div class="capture-flash error">Voice error: {voice.error}</div>
+        <div class="capture-flash error" aria-live="polite">Voice error: {voice.error}</div>
       )}
       {queueSize > 0 && (
         <div class="capture-flash offline-queue">

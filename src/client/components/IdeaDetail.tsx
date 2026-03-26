@@ -94,6 +94,17 @@ export function IdeaDetail({ ideaId, categories, onBack, onDeleted, onUpdated }:
     fetchIdea();
   }, [ideaId]);
 
+  // Warn before navigating away with unsaved edits
+  useEffect(() => {
+    if (!editing) return;
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [editing]);
+
   const fetchIdea = async () => {
     const res = await fetch(`/api/ideas/${ideaId}`);
     if (res.ok) {
@@ -232,7 +243,7 @@ export function IdeaDetail({ ideaId, categories, onBack, onDeleted, onUpdated }:
   };
 
   if (!idea) {
-    return <div class="detail-loading">Loading...</div>;
+    return <div class="detail-loading">Loading\u2026</div>;
   }
 
   const stageIndex = STAGES.indexOf(idea.stage as typeof STAGES[number]);
@@ -241,7 +252,7 @@ export function IdeaDetail({ ideaId, categories, onBack, onDeleted, onUpdated }:
     <div class="idea-detail">
       <div class="detail-nav">
         <button class="detail-back" onClick={onBack}>← Back</button>
-        {flash && <span class="detail-flash">{flash}</span>}
+        {flash && <span class="detail-flash" aria-live="polite">{flash}</span>}
         <div class="detail-actions">
           {!editing && (
             <button class="detail-edit-btn" onClick={startEditing}>Edit</button>
@@ -266,23 +277,26 @@ export function IdeaDetail({ ideaId, categories, onBack, onDeleted, onUpdated }:
             value={editTitle}
             onInput={(e) => setEditTitle((e.target as HTMLInputElement).value)}
             placeholder="Title"
+            aria-label="Idea title"
           />
           <textarea
             class="edit-body"
             value={editBody}
             onInput={(e) => setEditBody((e.target as HTMLTextAreaElement).value)}
-            placeholder="Body (optional)"
+            placeholder="Body (optional)\u2026"
+            aria-label="Idea body"
             rows={8}
           />
           <input
             class="edit-tags"
             value={editTags}
             onInput={(e) => setEditTags((e.target as HTMLInputElement).value)}
-            placeholder="Tags (comma-separated)"
+            placeholder="Tags (comma-separated)\u2026"
+            aria-label="Tags"
           />
           <div class="edit-buttons">
             <button class="save-btn" onClick={saveEdit} disabled={saving || !editTitle.trim()}>
-              {saving ? "Saving..." : "Save"}
+              {saving ? "Saving\u2026" : "Save"}
             </button>
             <button class="cancel-btn" onClick={cancelEditing}>Cancel</button>
           </div>
@@ -347,6 +361,7 @@ export function IdeaDetail({ ideaId, categories, onBack, onDeleted, onUpdated }:
                   <button
                     class={`field-mic ${dictatingField === "decision_technical_feasibility" ? "recording" : ""}`}
                     onClick={() => toggleDictation("decision_technical_feasibility", idea.decision_technical_feasibility || "")}
+                    aria-label={dictatingField === "decision_technical_feasibility" ? "Stop dictation" : "Dictate technical feasibility"}
                     title={dictatingField === "decision_technical_feasibility" ? "Stop dictation" : "Dictate"}
                   >
                     {dictatingField === "decision_technical_feasibility" ? "⏹" : "🎤"}
@@ -354,7 +369,7 @@ export function IdeaDetail({ ideaId, categories, onBack, onDeleted, onUpdated }:
                 )}
               </div>
               <textarea
-                placeholder="Can this be built? Resources, complexity, timeline..."
+                placeholder="Can this be built? Resources, complexity, timeline\u2026"
                 value={idea.decision_technical_feasibility || ""}
                 onInput={(e) => updateField({ decision_technical_feasibility: (e.target as HTMLTextAreaElement).value })}
                 rows={2}
@@ -367,6 +382,7 @@ export function IdeaDetail({ ideaId, categories, onBack, onDeleted, onUpdated }:
                   <button
                     class={`field-mic ${dictatingField === "decision_market_feasibility" ? "recording" : ""}`}
                     onClick={() => toggleDictation("decision_market_feasibility", idea.decision_market_feasibility || "")}
+                    aria-label={dictatingField === "decision_market_feasibility" ? "Stop dictation" : "Dictate market feasibility"}
                     title={dictatingField === "decision_market_feasibility" ? "Stop dictation" : "Dictate"}
                   >
                     {dictatingField === "decision_market_feasibility" ? "⏹" : "🎤"}
@@ -374,7 +390,7 @@ export function IdeaDetail({ ideaId, categories, onBack, onDeleted, onUpdated }:
                 )}
               </div>
               <textarea
-                placeholder="Can this reach the market? Distribution, regulations, barriers..."
+                placeholder="Can this reach the market? Distribution, regulations, barriers\u2026"
                 value={idea.decision_market_feasibility || ""}
                 onInput={(e) => updateField({ decision_market_feasibility: (e.target as HTMLTextAreaElement).value })}
                 rows={2}
@@ -387,6 +403,7 @@ export function IdeaDetail({ ideaId, categories, onBack, onDeleted, onUpdated }:
                   <button
                     class={`field-mic ${dictatingField === "decision_window_of_opportunity" ? "recording" : ""}`}
                     onClick={() => toggleDictation("decision_window_of_opportunity", idea.decision_window_of_opportunity || "")}
+                    aria-label={dictatingField === "decision_window_of_opportunity" ? "Stop dictation" : "Dictate window of opportunity"}
                     title={dictatingField === "decision_window_of_opportunity" ? "Stop dictation" : "Dictate"}
                   >
                     {dictatingField === "decision_window_of_opportunity" ? "⏹" : "🎤"}
@@ -394,7 +411,7 @@ export function IdeaDetail({ ideaId, categories, onBack, onDeleted, onUpdated }:
                 )}
               </div>
               <textarea
-                placeholder="Is there urgency? Market timing, competition, trends..."
+                placeholder="Is there urgency? Market timing, competition, trends\u2026"
                 value={idea.decision_window_of_opportunity || ""}
                 onInput={(e) => updateField({ decision_window_of_opportunity: (e.target as HTMLTextAreaElement).value })}
                 rows={2}
@@ -407,6 +424,7 @@ export function IdeaDetail({ ideaId, categories, onBack, onDeleted, onUpdated }:
                   <button
                     class={`field-mic ${dictatingField === "decision_six_month_vision" ? "recording" : ""}`}
                     onClick={() => toggleDictation("decision_six_month_vision", idea.decision_six_month_vision || "")}
+                    aria-label={dictatingField === "decision_six_month_vision" ? "Stop dictation" : "Dictate six-month vision"}
                     title={dictatingField === "decision_six_month_vision" ? "Stop dictation" : "Dictate"}
                   >
                     {dictatingField === "decision_six_month_vision" ? "⏹" : "🎤"}
@@ -414,7 +432,7 @@ export function IdeaDetail({ ideaId, categories, onBack, onDeleted, onUpdated }:
                 )}
               </div>
               <textarea
-                placeholder="If pursued, where do you expect to be in six months?"
+                placeholder="If pursued, where do you expect to be in six months\u2026"
                 value={idea.decision_six_month_vision || ""}
                 onInput={(e) => updateField({ decision_six_month_vision: (e.target as HTMLTextAreaElement).value })}
                 rows={2}
@@ -429,6 +447,7 @@ export function IdeaDetail({ ideaId, categories, onBack, onDeleted, onUpdated }:
         <select
           class="detail-select"
           value={idea.category}
+          aria-label="Category"
           onChange={(e) => updateField({ category: (e.target as HTMLSelectElement).value })}
         >
           {categories.map((c) => (

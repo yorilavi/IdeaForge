@@ -165,8 +165,10 @@ export function RubricPanel({ ideaId, rubric, onUpdate }: Props) {
 
   return (
     <div class="rubric-panel">
-      <div class="panel-header" onClick={() => setCollapsed(!collapsed)}>
-        <span class="panel-toggle">{collapsed ? "▶" : "▼"}</span>
+      <div class="panel-header" role="button" tabIndex={0} aria-expanded={!collapsed}
+        onClick={() => setCollapsed(!collapsed)}
+        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setCollapsed(!collapsed); } }}>
+        <span class="panel-toggle" aria-hidden="true">{collapsed ? "▶" : "▼"}</span>
         <h3>Evaluation Rubric</h3>
         {criteria.length > 0 && (
           <span class="panel-badge">{scoredCount}/{criteria.length} scored</span>
@@ -188,7 +190,7 @@ export function RubricPanel({ ideaId, rubric, onUpdate }: Props) {
                 onClick={() => handleGenerate()}
                 disabled={generating}
               >
-                {generating ? "Generating..." : "Generate Rubric"}
+                {generating ? "Generating\u2026" : "Generate Rubric"}
               </button>
             </div>
           ) : (
@@ -199,7 +201,7 @@ export function RubricPanel({ ideaId, rubric, onUpdate }: Props) {
                   onClick={() => handleGenerate(true)}
                   disabled={generating}
                 >
-                  {generating ? "Generating..." : "Regenerate Rubric"}
+                  {generating ? "Generating\u2026" : "Regenerate Rubric"}
                 </button>
               </div>
 
@@ -229,11 +231,13 @@ export function RubricPanel({ ideaId, rubric, onUpdate }: Props) {
                         <input
                           class="criterion-name-input"
                           value={c.name}
+                          aria-label="Criterion name"
                           onInput={(e) => updateCriterion(i, { name: (e.target as HTMLInputElement).value })}
                         />
                         <input
                           class="criterion-desc-input"
                           value={c.description}
+                          aria-label="Criterion description"
                           onInput={(e) => updateCriterion(i, { description: (e.target as HTMLInputElement).value })}
                         />
                       </div>
@@ -249,12 +253,14 @@ export function RubricPanel({ ideaId, rubric, onUpdate }: Props) {
                               updateWeight(i, Math.max(1, Math.min(100, val)));
                             }}
                             class="weight-input"
+                            aria-label="Weight percentage"
                           />
                           <span class="weight-pct">%</span>
                         </div>
                         <button
                           class="criterion-remove"
                           onClick={() => removeCriterion(i)}
+                          aria-label="Remove criterion"
                           title="Remove criterion"
                         >
                           ×
@@ -288,6 +294,7 @@ export function RubricPanel({ ideaId, rubric, onUpdate }: Props) {
                         <button
                           class={`field-mic ${dictatingIndex === i ? "recording" : ""}`}
                           onClick={() => toggleDictation(i)}
+                          aria-label={dictatingIndex === i ? "Stop dictation" : "Dictate notes"}
                           title={dictatingIndex === i ? "Stop dictation" : "Dictate"}
                         >
                           {dictatingIndex === i ? "⏹" : "🎤"}
@@ -298,7 +305,7 @@ export function RubricPanel({ ideaId, rubric, onUpdate }: Props) {
                     {expandedNotes.has(i) && (
                       <textarea
                         class="criterion-notes"
-                        placeholder="Research, to-dos, evidence..."
+                        placeholder="Research, to-dos, evidence\u2026"
                         value={c.notes}
                         onInput={(e) => updateCriterion(i, { notes: (e.target as HTMLTextAreaElement).value })}
                         rows={3}
