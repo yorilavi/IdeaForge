@@ -46,6 +46,7 @@ export function getFromIndex(id: string): IdeaSummary | null {
 
 export interface ListOptions {
   stage?: Stage;
+  decision?: string;
   category?: string;
   search?: string;
   sort?: "created" | "updated";
@@ -63,6 +64,9 @@ export function listFromIndex(opts: ListOptions = {}): {
   // Filter
   if (opts.stage) {
     entries = entries.filter((e) => e.idea.stage === opts.stage);
+  }
+  if (opts.decision) {
+    entries = entries.filter((e) => e.idea.decision === opts.decision);
   }
   if (opts.category) {
     entries = entries.filter((e) => e.idea.category === opts.category);

@@ -66,6 +66,7 @@ ideas.post("/quick", async (c) => {
 // List ideas
 ideas.get("/", async (c) => {
   const stage = c.req.query("stage") as Stage | undefined;
+  const decision = c.req.query("decision") || undefined;
   const category = c.req.query("category");
   const search = c.req.query("search");
   const sort = (c.req.query("sort") as "created" | "updated") || "created";
@@ -73,7 +74,7 @@ ideas.get("/", async (c) => {
   const limit = parseInt(c.req.query("limit") || "50", 10);
   const offset = parseInt(c.req.query("offset") || "0", 10);
 
-  const result = listIdeas({ stage, category, search, sort, order, limit, offset });
+  const result = listIdeas({ stage, decision, category, search, sort, order, limit, offset });
   return c.json(result);
 });
 
