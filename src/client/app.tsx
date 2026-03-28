@@ -31,13 +31,14 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [showCategories, setShowCategories] = useState(false);
-  const [filters, setFilters] = useState<{ stage?: string; category?: string; search?: string }>({});
+  const [filters, setFilters] = useState<{ stage?: string; decision?: string; category?: string; search?: string }>({});
   const offlineQueue = useOfflineQueue(() => fetchIdeas());
 
   const fetchIdeas = useCallback(async (f = filters) => {
     try {
       const params = new URLSearchParams({ sort: "created", order: "desc", limit: "100" });
       if (f.stage) params.set("stage", f.stage);
+      if (f.decision) params.set("decision", f.decision);
       if (f.category) params.set("category", f.category);
       if (f.search) params.set("search", f.search);
       const res = await fetch(`/api/ideas?${params}`);
@@ -65,7 +66,7 @@ function App() {
     fetchCategories();
   }, []);
 
-  const handleFilterChange = (f: { stage?: string; category?: string; search?: string }) => {
+  const handleFilterChange = (f: { stage?: string; decision?: string; category?: string; search?: string }) => {
     setFilters(f);
     fetchIdeas(f);
   };

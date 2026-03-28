@@ -24,13 +24,15 @@ interface Props {
   ideas: IdeaSummary[];
   categories: Category[];
   onSelect: (id: string) => void;
-  onFilterChange: (filters: { stage?: string; category?: string; search?: string }) => void;
+  onFilterChange: (filters: { stage?: string; decision?: string; category?: string; search?: string }) => void;
 }
 
 const STAGES = ["", "captured", "clarified", "evaluated", "decided"];
+const DECISIONS = ["pursue", "shelve", "merge", "drop"];
 
 export function IdeaList({ ideas, categories, onSelect, onFilterChange }: Props) {
   const [stage, setStage] = useState("");
+  const [decision, setDecision] = useState("");
   const [category, setCategory] = useState("");
   const [search, setSearch] = useState("");
   const [searchTimeout, setSearchTimeout] = useState<ReturnType<typeof setTimeout> | null>(null);
@@ -38,11 +40,13 @@ export function IdeaList({ ideas, categories, onSelect, onFilterChange }: Props)
   const applyFilters = (overrides: Record<string, string> = {}) => {
     const filters = {
       stage: overrides.stage ?? stage,
+      decision: overrides.decision ?? decision,
       category: overrides.category ?? category,
       search: overrides.search ?? search,
     };
     onFilterChange({
       stage: filters.stage || undefined,
+      decision: filters.decision || undefined,
       category: filters.category || undefined,
       search: filters.search || undefined,
     });
@@ -50,7 +54,17 @@ export function IdeaList({ ideas, categories, onSelect, onFilterChange }: Props)
 
   const handleStage = (v: string) => {
     setStage(v);
-    applyFilters({ stage: v });
+    if (v !== "decided" && decision) {
+      setDecision("");
+      applyFilters({ stage: v, decision: "" });
+    } else {
+      applyFilters({ stage: v });
+    }
+  };
+
+  const handleDecision = (v: string) => {
+    setDecision(v);
+    applyFilters({ decision: v });
   };
 
   const handleCategory = (v: string) => {
@@ -88,6 +102,19 @@ export function IdeaList({ ideas, categories, onSelect, onFilterChange }: Props)
               <option key={s} value={s}>{s}</option>
             ))}
           </select>
+          {stage === "decided" && (
+            <select
+              class="filter-select"
+              value={decision}
+              aria-label="Filter by decision"
+              onChange={(e) => handleDecision((e.target as HTMLSelectElement).value)}
+            >
+              <option value="">All decisions</option>
+              {DECISIONS.map((d) => (
+                <option key={d} value={d}>{d}</option>
+              ))}
+            </select>
+          )}
           <select
             class="filter-select"
             value={category}
