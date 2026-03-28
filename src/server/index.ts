@@ -27,7 +27,8 @@ app.get("*", serveStatic({ path: "./src/client/index.html" }));
 const start = async () => {
   const count = await initializeIndex();
   console.log(`Indexed ${count} ideas from ${config.ideasDir}`);
-  console.log(`IdeaForge running at http://localhost:${config.port}`);
+  const protocol = config.tls ? "https" : "http";
+  console.log(`IdeaForge running at ${protocol}://localhost:${config.port}`);
 };
 
 start();
@@ -35,4 +36,10 @@ start();
 export default {
   port: config.port,
   fetch: app.fetch,
+  ...(config.tls && {
+    tls: {
+      cert: Bun.file(config.tls.cert),
+      key: Bun.file(config.tls.key),
+    },
+  }),
 };
