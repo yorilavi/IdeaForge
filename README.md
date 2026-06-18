@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/logo.png" alt="IdeaForge logo" width="160" height="160" />
+</p>
+
 # IdeaForge
 
 Self-hosted idea capture and progression system. Capture ideas from your phone, watch, or desktop — via text, voice, or Siri Shortcuts — and move them through a structured lifecycle.
