@@ -1,0 +1,52 @@
+# Tailscale deployment — reach IdeaForge from anywhere on your tailnet with
+# valid HTTPS, WITHOUT publishing any host port.
+#
+#   1. Put TS_AUTHKEY (and optionally TS_HOSTNAME) in a .env file next to this file.
+#      Create a key at https://login.tailscale.com/admin/settings/keys
+#   2. docker compose -f docker-compose.tailscale.yml up -d --build
+#   3. Open https://<TS_HOSTNAME>.<your-tailnet>.ts.net  from any device on your tailnet.
+#
+# How it works: the Tailscale sidecar joins your tailnet and runs Tailscale Serve,
+# terminating HTTPS (real MagicDNS cert) and proxying to the app. The app shares the
+# sidecar's network namespace (network_mode: service:tailscale) and listens on plain
+# HTTP at 127.0.0.1:3000 — it is only reachable through Tailscale, not on the host.
+
+services:
+  tailscale:
+    image: tailscale/tailscale:latest
+    container_name: ideaforge-tailscale
+    hostname: ${TS_HOSTNAME:-ideaforge}
+    restart: unless-stopped
+    environment:
+      - TS_AUTHKEY=${TS_AUTHKEY:?set TS_AUTHKEY in your .env}
+      - TS_HOSTNAME=${TS_HOSTNAME:-ideaforge}
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_SERVE_CONFIG=/config/serve.json
+      - TS_EXTRA_ARGS=--hostname=${TS_HOSTNAME:-ideaforge}
+    volumes:
+      - tailscale-state:/var/lib/tailscale
+      - ./tailscale/serve.json:/config/serve.json:ro
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+
+  ideaforge:
+    build: .
+    image: ideaforge:latest
+    container_name: ideaforge
+    restart: unless-stopped
+    # Share the Tailscale container's network: the app is reachable only via the
+    # tailnet (no host ports). Tailscale Serve proxies HTTPS -> 127.0.0.1:3000.
+    network_mode: service:tailscale
+    depends_on:
+      - tailscale
+    environment:
+      - PORT=3000
+      - IDEAS_DIR=/data
+      - CLAUDE_API_KEY=${CLAUDE_API_KEY:-}
+    volumes:
+      - ./ideas:/data
+
+volumes:
+  tailscale-state:

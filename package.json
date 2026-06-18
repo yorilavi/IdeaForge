@@ -1,13 +1,19 @@
 {
   "name": "ideaforge",
-  "version": "0.1.0",
-  "private": true,
+  "version": "1.0.0",
+  "description": "Self-hosted personal idea capture and progression system — capture via text, voice, or Siri Shortcuts and move ideas through a structured lifecycle.",
+  "license": "MIT",
+  "author": "Yori Lavi",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yorilavi/IdeaForge.git"
+  },
   "type": "module",
   "scripts": {
     "dev": "bun --hot src/server/index.ts",
     "start": "bun src/server/index.ts",
-    "build": "$HOME/.bun/bin/bun build src/client/app.tsx --outdir src/client --target=browser",
-    "build:prod": "$HOME/.bun/bin/bun build src/client/app.tsx --outdir src/client --minify --target=browser",
+    "build": "bun build src/client/app.tsx --outdir src/client --target=browser",
+    "build:prod": "bun build src/client/app.tsx --outdir src/client --minify --target=browser",
     "check": "tsc --noEmit",
     "icons": "bun scripts/generate-icons.ts"
   },

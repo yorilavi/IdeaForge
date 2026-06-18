@@ -1,0 +1,26 @@
+# VCS / tooling
+.git
+.gitignore
+.claude
+.obsidian
+
+# Dependencies & build output (reinstalled / rebuilt inside the image)
+node_modules
+dist
+src/client/app.js
+
+# Secrets & local config — never bake these into an image
+.env
+certs
+
+# Personal data — ideas live in a mounted volume, not the image
+ideas
+
+# Docs, examples, and assets not needed at runtime
+*.md
+examples
+ideaForgeIcon.png
+
+# Misc
+*.log
+.DS_Store

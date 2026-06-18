@@ -3,6 +3,7 @@ import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { serveStatic } from "hono/bun";
 import { config } from "./lib/config.js";
+import { bootstrapDataDir } from "./lib/bootstrap.js";
 import { ideas } from "./routes/ideas.js";
 import { health } from "./routes/health.js";
 import { categories } from "./routes/categories.js";
@@ -25,6 +26,7 @@ app.get("*", serveStatic({ path: "./src/client/index.html" }));
 
 // Start
 const start = async () => {
+  await bootstrapDataDir();
   const count = await initializeIndex();
   console.log(`Indexed ${count} ideas from ${config.ideasDir}`);
   const protocol = config.tls ? "https" : "http";

@@ -1,0 +1,24 @@
+# Standard local / LAN deployment.
+#   docker compose up -d --build
+# The app is published on the host at http://localhost:3000.
+# Your ideas are stored on the host in ./ideas (mounted to /data in the container).
+#
+# For Tailscale (reachable anywhere on your tailnet, valid HTTPS, no host port),
+# use docker-compose.tailscale.yml instead — see the README.
+
+services:
+  ideaforge:
+    build: .
+    image: ideaforge:latest
+    container_name: ideaforge
+    restart: unless-stopped
+    environment:
+      - PORT=3000
+      - IDEAS_DIR=/data
+      # Optional — enables AI categorization. Set in a .env file next to this compose file.
+      - CLAUDE_API_KEY=${CLAUDE_API_KEY:-}
+    volumes:
+      # Host ./ideas  <->  container /data  (your .md files persist here)
+      - ./ideas:/data
+    ports:
+      - "3000:3000"
