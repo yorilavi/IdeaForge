@@ -12,6 +12,17 @@ locally with [Bun](https://bun.sh), or with [Docker](#run-with-docker) (optional
 
 > **Two ways to run:** [Local (Bun)](#run-locally-bun) · [Docker](#run-with-docker)
 
+## Quick start
+
+```bash
+git clone https://github.com/yorilavi/IdeaForge.git && cd IdeaForge
+cp .env.example .env        # optional: add CLAUDE_API_KEY to enable AI features
+bun install && bun run build
+bun run dev                 # → http://localhost:3000
+```
+
+Prefer Docker? `docker compose up -d --build` → http://localhost:3000
+
 ## Run locally (Bun)
 
 ### Prerequisites
@@ -54,10 +65,10 @@ On first start the app creates `IDEAS_DIR` if needed and seeds a default
 
 ```bash
 # Development (hot reload)
-bun --hot src/server/index.ts
+bun run dev
 
 # Production
-bun src/server/index.ts
+bun run start
 ```
 
 Then open `http://localhost:3000` in your browser.
