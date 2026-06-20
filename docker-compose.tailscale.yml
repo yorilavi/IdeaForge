@@ -22,7 +22,6 @@ services:
       - TS_HOSTNAME=${TS_HOSTNAME:-ideaforge}
       - TS_STATE_DIR=/var/lib/tailscale
       - TS_SERVE_CONFIG=/config/serve.json
-      - TS_EXTRA_ARGS=--hostname=${TS_HOSTNAME:-ideaforge}
     volumes:
       - tailscale-state:/var/lib/tailscale
       - ./tailscale/serve.json:/config/serve.json:ro

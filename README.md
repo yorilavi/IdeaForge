@@ -103,6 +103,9 @@ Optionally run a **Tailscale sidecar** so IdeaForge is reachable from anywhere o
 tailnet, over **valid HTTPS** (real MagicDNS certificate — no warnings, no public
 exposure). The app is bound only to the container's network, **not to a host port**.
 
+0. **One-time tailnet setup:** in the [Tailscale admin console](https://login.tailscale.com/admin/dns),
+   enable **MagicDNS** and **HTTPS Certificates**. Tailscale Serve needs these to issue the
+   `*.ts.net` certificate — without them the HTTPS proxy won't start.
 1. Create an auth key at [login.tailscale.com → Settings → Keys](https://login.tailscale.com/admin/settings/keys).
 2. Add it to your `.env` (next to the compose file):
 
@@ -128,6 +131,26 @@ voice capture and PWA install work out of the box.
 
 > The sidecar needs `/dev/net/tun` and the `NET_ADMIN` capability (already set in the
 > compose file). Run it on a Linux host for a true always-on deployment.
+
+#### Keep it online (stop the node from expiring)
+
+There are two expirations, and the one that disconnects a long-running server is the
+**node key**, not the auth key. The auth key is only used once at first join — after that
+the node identity is saved in the `tailscale-state` volume, so an expired auth key never
+takes you offline. By default the **node** expires in ~6 months. To make it permanent:
+
+- **Recommended — tag the node.** Tagged nodes have key expiry disabled automatically and
+  aren't tied to a personal account, which is ideal for a headless container.
+  1. In the admin console → **Access Controls**, add a tag owner:
+     `"tagOwners": { "tag:server": ["autogroup:admin"] }`
+  2. Generate the auth key with **Reusable** on and **Tag = `tag:server`**.
+  3. Generate the auth key with the tag selected (above) — the node is then tagged
+     automatically on join, so no compose change is needed. (If you prefer to set it
+     explicitly, add `TS_EXTRA_ARGS=--advertise-tags=tag:server` to the sidecar in
+     [`docker-compose.tailscale.yml`](docker-compose.tailscale.yml) — do **not** also
+     pass `--hostname` there, since `TS_HOSTNAME` already sets it.)
+- **Or, one click after it joins:** admin console → **Machines** → your host →
+  **⋮ → Disable key expiry**.
 
 ## npm scripts
 

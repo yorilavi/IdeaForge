@@ -23,8 +23,10 @@ ENV NODE_ENV=production
 ENV PORT=3000
 ENV IDEAS_DIR=/data
 
-COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/package.json ./package.json
+# Install runtime dependencies only (no devDeps — Bun executes TS directly,
+# so typescript/@types are never needed at runtime). Keeps the slim image lean.
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile --production
 COPY --from=build /app/tsconfig.json ./tsconfig.json
 COPY --from=build /app/src ./src
 
