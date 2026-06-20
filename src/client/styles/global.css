@@ -109,6 +109,9 @@ body::after {
   max-width: 640px;
   margin: 0 auto;
   padding: 0 var(--space-lg);
+  /* Clear the device status bar (notch / Dynamic Island) on mobile PWAs.
+     Resolves to 0 on desktop and non-notched screens, so they're unaffected. */
+  padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: env(safe-area-inset-bottom, 20px);
 }
 
