@@ -5,6 +5,17 @@ All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-06-20
+
+### Fixed
+- Mobile PWA: content at the top of the screen (e.g. the idea-detail view with
+  its Delete action) no longer renders under the device status bar
+  (notch / Dynamic Island). The app shell now respects the top safe-area inset.
+
+### Changed
+- Bumped the service worker cache so installed PWAs pick up the updated styles
+  on next launch.
+
 ## [1.0.0] - 2026-06-18
 
 First public release.
@@ -27,4 +38,5 @@ First public release.
 - Self-bootstrapping data directory: a fresh clone or empty volume is seeded with
   a default `categories.yaml` on first start.
 
+[1.1.0]: https://github.com/yorilavi/IdeaForge/releases/tag/v1.1.0
 [1.0.0]: https://github.com/yorilavi/IdeaForge/releases/tag/v1.0.0
