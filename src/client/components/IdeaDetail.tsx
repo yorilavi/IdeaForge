@@ -48,6 +48,7 @@ interface Idea {
   score: number | null;
   clarification: Clarification | null;
   rubric: Rubric | null;
+  build_prompt?: string;
   body: string;
 }
 
@@ -327,7 +328,9 @@ export function IdeaDetail({ ideaId, categories, onBack, onDeleted, onUpdated }:
         <ClarificationPanel
           ideaId={idea.id}
           clarification={idea.clarification}
+          buildPrompt={idea.build_prompt || ""}
           onUpdate={(clarification) => updateField({ clarification })}
+          onBuildPromptChange={(build_prompt) => updateField({ build_prompt })}
         />
       )}
 

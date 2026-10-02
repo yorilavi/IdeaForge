@@ -9,6 +9,7 @@ import {
   listIdeas,
 } from "../services/idea-service.js";
 import { isAiEnabled, summarizeText, generateClarification, generateRubric } from "../services/ai-service.js";
+import { createBuildPrompt, joinLabels, missingBuildPromptFields } from "../services/build-prompt-service.js";
 
 const ideas = new Hono();
 
@@ -160,6 +161,26 @@ ideas.post("/:id/rubric", async (c) => {
     return c.json(updated);
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Failed to generate rubric";
+    return c.json({ error: msg }, 500);
+  }
+});
+
+// Generate a Claude Code prompt for building a demo of the idea.
+// Uses AI to scope the demo when configured, otherwise a structured template.
+ideas.post("/:id/build-prompt", async (c) => {
+  try {
+    const idea = await getIdea(c.req.param("id"));
+    if (!idea) return c.json({ error: "Idea not found" }, 404);
+    const missing = missingBuildPromptFields(idea.clarification);
+    if (missing.length > 0) {
+      return c.json({ error: `Fill in ${joinLabels(missing)} first` }, 400);
+    }
+
+    const build_prompt = await createBuildPrompt(idea);
+    const updated = await updateIdea(idea.id, { build_prompt });
+    return c.json(updated);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "Failed to generate build prompt";
     return c.json({ error: msg }, 500);
   }
 });

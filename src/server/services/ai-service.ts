@@ -232,3 +232,93 @@ Rules:
 
   return { criteria };
 }
+
+// Opus for long-form writing where quality matters more than latency. Thinking is
+// always on for this model, so content can start with a thinking block — collect
+// the text blocks rather than reading content[0]. `fallbacks: "default"` lets the
+// API retry on another model if a safety classifier declines the request.
+async function callClaudeOpus(prompt: string, maxTokens: number): Promise<string> {
+  if (!config.claudeApiKey) {
+    throw new Error("Claude API key not configured");
+  }
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": config.claudeApiKey,
+      "anthropic-version": "2023-06-01",
+      "anthropic-beta": "server-side-fallback-2026-07-01",
+    },
+    body: JSON.stringify({
+      model: "claude-opus-5-5",
+      max_tokens: maxTokens,
+      output_config: { effort: "medium" },
+      fallbacks: "default",
+      messages: [{ role: "user", content: prompt }],
+    }),
+  });
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`Claude API error ${res.status}: ${errText}`);
+  }
+  const data = await res.json();
+  if (data.stop_reason === "refusal") {
+    throw new Error("Claude declined to generate this — try rewording the clarification");
+  }
+  if (data.stop_reason === "max_tokens") {
+    throw new Error("AI response was cut off — try again");
+  }
+  return (data.content || [])
+    .filter((b: { type: string }) => b.type === "text")
+    .map((b: { text: string }) => b.text)
+    .join("")
+    .trim();
+}
+
+export async function generateBuildScope(
+  title: string,
+  body: string,
+  clarification: Clarification
+): Promise<string> {
+  let context = `Idea title: ${title}`;
+  if (body) context += `\nIdea details: ${body}`;
+  context += `\nValue proposition: ${clarification.value_proposition}`;
+  context += `\nProblem: ${clarification.problem}`;
+  context += `\nTarget audience: ${clarification.target_audience}`;
+  if (clarification.key_differentiator) context += `\nKey differentiator: ${clarification.key_differentiator}`;
+  if (clarification.technical_feasibility) context += `\nTechnical notes: ${clarification.technical_feasibility}`;
+  if (clarification.notes) context += `\nNotes: ${clarification.notes}`;
+
+  const prompt = `You are scoping the first runnable demo of a product idea. Your output becomes the "What to build" section of a brief handed to Claude Code, an AI coding agent that will build the demo in one session. The rest of the brief (the idea itself, working instructions, definition of done) is written separately, so write only this section.
+
+${context}
+
+The demo's job is to let someone from the target audience experience the value proposition firsthand. Scope it to the smallest thing that does that convincingly: one core journey done well beats many shallow features. Ground every choice in the problem and audience above, and honor any preferences or constraints stated in the details or notes (platform, features, tech, what to avoid). Be concrete: name actual screens, fields, and sample content rather than categories of them.
+
+Write GitHub-flavored markdown using exactly these headings, in this order, with nothing before the first heading or after the last section:
+
+### Platform
+One or two sentences: the form factor (web app, mobile-first web app, CLI, browser extension, etc.) that fits how this audience would use it, and why.
+
+### Core user journey
+A numbered list of 4-8 steps, from a first-time user arriving to them getting the value.
+
+### MVP features
+3-6 bullets. Each names the feature and, in a few words, which part of the problem it addresses.
+
+### Screens
+One bullet per screen or view: what it shows and what the user can do there.
+
+### Data model
+The main entities and their key fields, as a short bullet list.
+
+### Sample data
+The realistic seed data the demo should ship with so it feels real on first run, written for this audience.
+
+### Out of scope
+3-6 bullets of things to leave out of the demo (such as auth, payments, or real integrations), and what to mock instead where relevant.`;
+
+  const text = await callClaudeOpus(prompt, 16000);
+  if (!text) throw new Error("AI returned an empty response");
+  return text;
+}

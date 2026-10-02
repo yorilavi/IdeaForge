@@ -38,6 +38,8 @@ start();
 export default {
   port: config.port,
   fetch: app.fetch,
+  // Bun's default is 10s, which cuts off slower AI generations (build prompt)
+  idleTimeout: 120,
   ...(config.tls && {
     tls: {
       cert: Bun.file(config.tls.cert),

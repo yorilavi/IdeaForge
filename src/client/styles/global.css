@@ -1405,6 +1405,52 @@ body::after {
   color: var(--text-tertiary);
 }
 
+/* ===== Build Prompt ===== */
+.build-prompt {
+  margin-top: var(--space-xs);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.build-prompt-header {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--space-sm) var(--space-md);
+  margin-bottom: var(--space-sm);
+}
+
+.build-prompt-intro {
+  flex: 1;
+  min-width: 200px;
+}
+
+.build-prompt-hint {
+  margin: 2px 0 0;
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
+  line-height: 1.45;
+}
+
+.build-prompt-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.build-prompt-error {
+  margin-bottom: var(--space-sm);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--error);
+}
+
+.build-prompt textarea {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
 /* ===== Rubric ===== */
 .rubric-empty {
   padding: var(--space-xl) var(--space-lg);

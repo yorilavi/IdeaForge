@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from "preact/hooks";
+import { BuildPrompt } from "./BuildPrompt.js";
 
 interface Clarification {
   value_proposition: string;
@@ -14,7 +15,9 @@ interface Clarification {
 interface Props {
   ideaId: string;
   clarification: Clarification | null;
+  buildPrompt: string;
   onUpdate: (clarification: Clarification) => void;
+  onBuildPromptChange: (text: string) => void;
 }
 
 const FIELDS: { key: keyof Clarification; label: string; placeholder: string }[] = [
@@ -27,6 +30,11 @@ const FIELDS: { key: keyof Clarification; label: string; placeholder: string }[]
   { key: "market_attractiveness", label: "Market Attractiveness", placeholder: "How big is the opportunity? Growth, demand, competition?" },
   { key: "notes", label: "Notes", placeholder: "General comments, thoughts, open questions..." },
 ];
+
+// Fields the build prompt is generated from
+const BUILD_PROMPT_FIELDS = FIELDS.filter((f) =>
+  f.key === "value_proposition" || f.key === "problem" || f.key === "target_audience"
+);
 
 const SpeechRecognitionClass =
   typeof window !== "undefined"
@@ -44,7 +52,7 @@ const EMPTY: Clarification = {
   notes: "",
 };
 
-export function ClarificationPanel({ ideaId, clarification, onUpdate }: Props) {
+export function ClarificationPanel({ ideaId, clarification, buildPrompt, onUpdate, onBuildPromptChange }: Props) {
   const [collapsed, setCollapsed] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState("");
@@ -55,6 +63,7 @@ export function ClarificationPanel({ ideaId, clarification, onUpdate }: Props) {
   const current: Clarification = { ...EMPTY, ...clarification };
 
   const filledCount = FIELDS.filter((f) => current[f.key].trim()).length;
+  const missingForBuild = BUILD_PROMPT_FIELDS.filter((f) => !current[f.key].trim()).map((f) => f.label);
 
   const stopDictation = useCallback(() => {
     if (recognitionRef.current) {
@@ -194,6 +203,12 @@ export function ClarificationPanel({ ideaId, clarification, onUpdate }: Props) {
               />
             </div>
           ))}
+          <BuildPrompt
+            ideaId={ideaId}
+            buildPrompt={buildPrompt}
+            missing={missingForBuild}
+            onChange={onBuildPromptChange}
+          />
         </div>
       )}
     </div>
