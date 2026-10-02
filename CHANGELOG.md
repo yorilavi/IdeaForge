@@ -5,6 +5,22 @@ All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **Build prompt** in the Clarification panel: generates a ready-to-paste prompt
+  for Claude Code that builds a working demo of the idea from its value
+  proposition, problem, and target audience. With an API key, Claude Opus scopes
+  the demo (core journey, MVP features, screens, data model, sample data, out of
+  scope). Without one, a structured template is used. The prompt is saved with the
+  idea, editable, and has a one-click Copy button.
+- `POST /api/ideas/:id/build-prompt` endpoint.
+
+### Changed
+- Raised the server idle timeout from Bun's 10s default to 120s so longer AI
+  generations aren't cut off.
+- Bumped the service worker cache so installed PWAs pick up the new UI.
+
 ## [1.1.0] - 2026-06-20
 
 ### Fixed

@@ -61,6 +61,7 @@ export async function createIdea(input: CreateIdeaInput): Promise<Idea> {
     score: null,
     clarification: null,
     rubric: null,
+    build_prompt: "",
     body: input.body || "",
   };
 
@@ -168,6 +169,7 @@ export async function updateIdea(
     ...(input.decision_six_month_vision !== undefined && { decision_six_month_vision: input.decision_six_month_vision }),
     ...(input.clarification !== undefined && { clarification: input.clarification }),
     ...(input.rubric !== undefined && { rubric: input.rubric }),
+    ...(input.build_prompt !== undefined && { build_prompt: input.build_prompt }),
     updated: new Date().toISOString(),
   };
 

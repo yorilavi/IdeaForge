@@ -44,6 +44,7 @@ export interface IdeaFrontmatter {
   score: number | null;
   clarification: Clarification | null;
   rubric: Rubric | null;
+  build_prompt: string;
 }
 
 export interface Idea extends IdeaFrontmatter {
@@ -81,6 +82,7 @@ export interface UpdateIdeaInput {
   decision_six_month_vision?: string;
   clarification?: Clarification;
   rubric?: Rubric;
+  build_prompt?: string;
 }
 
 export interface Category {

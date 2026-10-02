@@ -191,6 +191,7 @@ bun run icons        # Regenerate PWA icons
 | `PUT` | `/api/ideas/:id` | Update idea fields |
 | `DELETE` | `/api/ideas/:id` | Delete idea |
 | `POST` | `/api/ideas/summarize` | AI-summarize text into a title (`{text}`) |
+| `POST` | `/api/ideas/:id/build-prompt` | Generate a Claude Code prompt for building a demo of the idea (needs value proposition, problem, and target audience) |
 | `GET` | `/api/categories` | Get category taxonomy |
 | `GET` | `/api/health` | Health check |
 
@@ -203,6 +204,16 @@ Captured → Clarified → Evaluated → Decided
                                       ├── merge
                                       └── drop
 ```
+
+### Build prompt
+
+Once an idea is clarified, the Clarification panel can turn its value proposition,
+problem, and target audience into a ready-to-paste prompt for
+[Claude Code](https://claude.com/claude-code) that builds a working demo of the idea.
+With `CLAUDE_API_KEY` set, Claude Opus scopes the demo (core user journey, MVP
+features, screens, data model, sample data, and what to leave out). Without a key,
+you get a structured template that asks Claude Code to work out that scope itself.
+The prompt is saved with the idea and can be edited before you copy it.
 
 ## Data Storage
 
