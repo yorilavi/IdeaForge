@@ -1,4 +1,4 @@
-const CACHE_NAME = "ideaforge-v24";
+const CACHE_NAME = "ideaforge-v25";
 const SHELL_ASSETS = [
   "/",
   "/index.html",

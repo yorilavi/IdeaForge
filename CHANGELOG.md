@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Markdown export.** An Export button on each idea downloads a readable `.md`
+  document with its overview, description, clarification answers, evaluation
+  rubric, decision answers, and build prompt. **Export all** in the header
+  downloads every idea in one file, grouped by stage. New endpoints:
+  `GET /api/ideas/:id/export` and `GET /api/ideas/export`.
 - **Build prompt** in the Clarification panel: generates a ready-to-paste prompt
   for Claude Code that builds a working demo of the idea from its value
   proposition, problem, and target audience. With an API key, Claude Opus scopes

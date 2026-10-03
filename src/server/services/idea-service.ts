@@ -147,6 +147,10 @@ export async function getIdea(id: string): Promise<Idea | null> {
   return readIdeaFile(id);
 }
 
+export async function getAllIdeas(): Promise<Idea[]> {
+  return readAllIdeaFiles();
+}
+
 export async function updateIdea(
   id: string,
   input: UpdateIdeaInput

@@ -256,7 +256,17 @@ export function IdeaDetail({ ideaId, categories, onBack, onDeleted, onUpdated }:
         {flash && <span class="detail-flash" aria-live="polite">{flash}</span>}
         <div class="detail-actions">
           {!editing && (
-            <button class="detail-edit-btn" onClick={startEditing}>Edit</button>
+            <>
+              <a
+                class="detail-export-btn"
+                href={`/api/ideas/${idea.id}/export`}
+                download
+                title="Download this idea as a Markdown file"
+              >
+                Export
+              </a>
+              <button class="detail-edit-btn" onClick={startEditing}>Edit</button>
+            </>
           )}
           {!confirmDelete ? (
             <button class="detail-delete-btn" onClick={() => setConfirmDelete(true)}>Delete</button>
