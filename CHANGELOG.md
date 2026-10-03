@@ -5,26 +5,28 @@ All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.2.0] - 2026-10-03
 
 ### Added
+- **Build prompt** in the Clarification panel: generates a ready-to-paste prompt
+  for Claude Code that builds a working demo of the idea from its value
+  proposition, problem, and target audience (plus differentiator, technical
+  notes, notes, and description when filled in). With an API key, Claude Opus
+  5.5 scopes the demo: core journey, MVP features, screens, data model, sample
+  data, and what to leave out. Without one, a structured template is used. The
+  prompt is saved with the idea, editable, and has a Copy button. New endpoint:
+  `POST /api/ideas/:id/build-prompt`.
 - **Markdown export.** An Export button on each idea downloads a readable `.md`
   document with its overview, description, clarification answers, evaluation
   rubric, decision answers, and build prompt. **Export all** in the header
   downloads every idea in one file, grouped by stage. New endpoints:
   `GET /api/ideas/:id/export` and `GET /api/ideas/export`.
-- **Build prompt** in the Clarification panel: generates a ready-to-paste prompt
-  for Claude Code that builds a working demo of the idea from its value
-  proposition, problem, and target audience. With an API key, Claude Opus scopes
-  the demo (core journey, MVP features, screens, data model, sample data, out of
-  scope). Without one, a structured template is used. The prompt is saved with the
-  idea, editable, and has a one-click Copy button.
-- `POST /api/ideas/:id/build-prompt` endpoint.
 
 ### Changed
 - Raised the server idle timeout from Bun's 10s default to 120s so longer AI
   generations aren't cut off.
-- Bumped the service worker cache so installed PWAs pick up the new UI.
+- Bumped the service worker cache so installed PWAs pick up the new UI on next
+  launch.
 
 ## [1.1.0] - 2026-06-20
 
@@ -59,5 +61,6 @@ First public release.
 - Self-bootstrapping data directory: a fresh clone or empty volume is seeded with
   a default `categories.yaml` on first start.
 
+[1.2.0]: https://github.com/yorilavi/IdeaForge/releases/tag/v1.2.0
 [1.1.0]: https://github.com/yorilavi/IdeaForge/releases/tag/v1.1.0
 [1.0.0]: https://github.com/yorilavi/IdeaForge/releases/tag/v1.0.0
