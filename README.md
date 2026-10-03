@@ -188,6 +188,8 @@ bun run icons        # Regenerate PWA icons
 | `POST` | `/api/ideas/quick` | Quick capture (`{text, source?}` or plain text body) |
 | `GET` | `/api/ideas` | List ideas (query: `stage`, `category`, `search`, `sort`, `order`, `limit`, `offset`) |
 | `GET` | `/api/ideas/:id` | Get single idea |
+| `GET` | `/api/ideas/:id/export` | Download one idea as a readable Markdown file |
+| `GET` | `/api/ideas/export` | Download every idea as one Markdown file, grouped by stage |
 | `PUT` | `/api/ideas/:id` | Update idea fields |
 | `DELETE` | `/api/ideas/:id` | Delete idea |
 | `POST` | `/api/ideas/summarize` | AI-summarize text into a title (`{text}`) |
@@ -214,6 +216,15 @@ With `CLAUDE_API_KEY` set, Claude Opus scopes the demo (core user journey, MVP
 features, screens, data model, sample data, and what to leave out). Without a key,
 you get a structured template that asks Claude Code to work out that scope itself.
 The prompt is saved with the idea and can be edited before you copy it.
+
+### Export to Markdown
+
+**Export** on an idea downloads it as a readable Markdown document: an overview
+(stage, decision, score, category, tags, dates), the description, every answered
+clarification question, the evaluation rubric as a table, the decision answers,
+and the build prompt. **Export all** in the header downloads every idea in one file,
+grouped by stage. Unlike the raw files in `ideas/`, the export is meant for reading
+and sharing rather than for re-importing.
 
 ## Data Storage
 

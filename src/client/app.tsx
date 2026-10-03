@@ -109,6 +109,9 @@ function App() {
   return (
     <div class="app">
       <header class="app-header">
+        <a class="settings-link export-link" href="/api/ideas/export" download title="Download all ideas as one Markdown file">
+          Export all
+        </a>
         <h1>IdeaForge</h1>
         <button class="settings-link" onClick={() => setShowCategories(true)}>Categories</button>
       </header>

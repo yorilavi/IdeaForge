@@ -7,9 +7,11 @@ import {
   updateIdea,
   deleteIdea,
   listIdeas,
+  getAllIdeas,
 } from "../services/idea-service.js";
 import { isAiEnabled, summarizeText, generateClarification, generateRubric } from "../services/ai-service.js";
 import { createBuildPrompt, joinLabels, missingBuildPromptFields } from "../services/build-prompt-service.js";
+import { renderIdeaMarkdown, renderAllIdeasMarkdown, exportFilename } from "../services/export-service.js";
 
 const ideas = new Hono();
 
@@ -79,6 +81,20 @@ ideas.get("/", async (c) => {
   return c.json(result);
 });
 
+// Export every idea as one Markdown file (registered before /:id so "export" isn't read as an id)
+ideas.get("/export", async (c) => {
+  try {
+    const all = await getAllIdeas();
+    const date = new Date().toISOString().slice(0, 10);
+    return c.body(renderAllIdeasMarkdown(all), 200, {
+      "Content-Type": "text/markdown; charset=utf-8",
+      "Content-Disposition": `attachment; filename="ideaforge-export-${date}.md"`,
+    });
+  } catch {
+    return c.json({ error: "Failed to export ideas" }, 500);
+  }
+});
+
 // Get single idea
 ideas.get("/:id", async (c) => {
   const idea = await getIdea(c.req.param("id"));
@@ -131,6 +147,16 @@ ideas.post("/summarize", async (c) => {
   } catch {
     return c.json({ error: "Failed to summarize" }, 500);
   }
+});
+
+// Export one idea as a Markdown file
+ideas.get("/:id/export", async (c) => {
+  const idea = await getIdea(c.req.param("id"));
+  if (!idea) return c.json({ error: "Idea not found" }, 404);
+  return c.body(renderIdeaMarkdown(idea), 200, {
+    "Content-Type": "text/markdown; charset=utf-8",
+    "Content-Disposition": `attachment; filename="${exportFilename(idea.title, idea.id)}"`,
+  });
 });
 
 // AI-generate clarification for an idea
